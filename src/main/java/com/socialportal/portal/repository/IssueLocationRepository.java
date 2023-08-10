@@ -3,6 +3,7 @@ package com.socialportal.portal.repository;
 import com.socialportal.portal.model.geo.IssueLocation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+
 import java.util.List;
 
 public interface IssueLocationRepository extends JpaRepository<IssueLocation, Long> {
