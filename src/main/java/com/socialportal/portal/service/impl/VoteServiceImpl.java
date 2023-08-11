@@ -1,7 +1,6 @@
 package com.socialportal.portal.service.impl;
 
 import com.socialportal.portal.dto.VoteDto;
-import com.socialportal.portal.exception.issue.NoIssueFoundException;
 import com.socialportal.portal.model.issues.Issue;
 import com.socialportal.portal.model.issues.IssueVotes;
 import com.socialportal.portal.model.user.UserEntity;
@@ -14,11 +13,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +43,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public Integer vote(Authentication authentication, Integer vote, Long issueId) {
+        vote = this.validateVoteValues(vote);
         String username = authentication.getName();
         Long userId;
         UserEntity dbUser = this.userEntityRepository.findByUsername(username)
