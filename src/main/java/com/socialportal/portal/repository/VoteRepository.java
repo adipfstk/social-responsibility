@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface VoteRepository extends JpaRepository<IssueVotes, Long> {
-    @Query(value = "SELECT SUM(iv.up_vote) FROM issues_votes iv WHERE iv.issue_id = ?1", nativeQuery = true)
-    Optional<Long> findUpVotesByIssueId(Long issueId);
 
-    @Query(value = "SELECT SUM(iv.down_vote) FROM issues_votes iv WHERE iv.issue_id = ?1", nativeQuery = true)
-    Optional<Long> findDownVotesByIssueId(Long issueId);
-
+    @Query(value = "SELECT COUNT(vote_value) "
+    + "FROM issues_votes iv "
+    + "WHERE iv.vote_value = ?1 AND iv.issue_id = ?2", nativeQuery = true)
+    Optional<Long> countVotes(Long voteDirection, Long issueId);
+    Optional<IssueVotes> findByUserId(Long issueId);
 
 }

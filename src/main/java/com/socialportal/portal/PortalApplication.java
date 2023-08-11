@@ -1,3 +1,4 @@
+
 package com.socialportal.portal;
 
 import org.springframework.boot.SpringApplication;

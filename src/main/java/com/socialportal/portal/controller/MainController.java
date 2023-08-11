@@ -7,6 +7,8 @@ import com.socialportal.portal.model.issues.Issue;
 import com.socialportal.portal.pojo.request.IssueRequest;
 import com.socialportal.portal.service.CommentService;
 import com.socialportal.portal.service.IssueService;
+import com.socialportal.portal.service.VoteService;
+import com.socialportal.portal.service.util.VoteValues;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class MainController {
     private final IssueService issueService;
     private final CommentService commentService;
+    private final VoteService voteService;
     @PostMapping("add-issue")
     ResponseEntity<Issue> addIssue(@RequestBody IssueRequest issue) {
         return new ResponseEntity<>(this.issueService.save(issue), HttpStatus.CREATED);
@@ -57,5 +60,18 @@ public class MainController {
     {
         return new ResponseEntity<>(this.commentService.addComment(authentication, comment, issueId), HttpStatus.CREATED);
     }
+
+    @PostMapping("issue/{issueId}/vote")
+    ResponseEntity<Integer> vote(@PathVariable Long issueId, Authentication authentication, @RequestParam Integer voteValue) {
+        if (voteValue > 0) {
+            voteValue = 1;
+        }
+        else {
+            voteValue = -1;
+        }
+
+        return ResponseEntity.ok(this.voteService.vote(authentication, voteValue, issueId));
+    }
+
 
 }

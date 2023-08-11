@@ -5,21 +5,21 @@ import com.socialportal.portal.model.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "issues_votes")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class IssueVotes {
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "up_vote")
-    private boolean upVote;
-    @Column(name = "down_vote")
-    private boolean downVote;
+    @Column
+    Integer voteValue;
 
     @JsonIgnore
     @OneToOne
