@@ -26,6 +26,9 @@ public class Issue {
     private String description;
 
     @JsonIgnore
+    private boolean archived;
+
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     private IssueLocation issueLocation;
 

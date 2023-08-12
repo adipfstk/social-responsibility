@@ -47,7 +47,7 @@ public class VoteServiceImpl implements VoteService {
         String username = authentication.getName();
         Long userId;
         UserEntity dbUser = this.userEntityRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Yeah"));
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found in Database!"));
         Optional<Issue> dbIssue = this.issueRepository.findById(issueId);
 
         userId = dbUser.getId();

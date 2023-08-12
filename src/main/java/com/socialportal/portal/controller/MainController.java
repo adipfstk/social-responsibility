@@ -8,7 +8,6 @@ import com.socialportal.portal.pojo.request.IssueRequest;
 import com.socialportal.portal.service.CommentService;
 import com.socialportal.portal.service.IssueService;
 import com.socialportal.portal.service.VoteService;
-import com.socialportal.portal.service.util.VoteValues;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -63,13 +62,6 @@ public class MainController {
 
     @PostMapping("issue/{issueId}/vote")
     ResponseEntity<Integer> vote(@PathVariable Long issueId, Authentication authentication, @RequestParam Integer voteValue) {
-        if (voteValue > 0) {
-            voteValue = 1;
-        }
-        else {
-            voteValue = -1;
-        }
-
         return ResponseEntity.ok(this.voteService.vote(authentication, voteValue, issueId));
     }
 
