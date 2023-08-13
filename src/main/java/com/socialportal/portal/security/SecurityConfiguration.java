@@ -23,6 +23,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/main/**").hasAuthority("USER")
+                        .requestMatchers("/api/v1/admin/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

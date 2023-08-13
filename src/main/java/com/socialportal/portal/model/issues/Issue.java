@@ -4,15 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.socialportal.portal.model.geo.IssueLocation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Issue {
     @JsonIgnore
     @Id
@@ -26,7 +30,7 @@ public class Issue {
     private String description;
 
     @JsonIgnore
-    private boolean archived;
+    private boolean archived = false;
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)

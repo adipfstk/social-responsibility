@@ -24,7 +24,6 @@ public class VoteServiceImpl implements VoteService {
     private final UserEntityRepository userEntityRepository;
     private final IssueRepository issueRepository;
 
-
     @Override
     public VoteDto getVotesByIssueId(Long issueId) {
 

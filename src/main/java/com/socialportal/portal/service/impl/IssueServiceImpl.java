@@ -10,9 +10,10 @@ import com.socialportal.portal.repository.IssueRepository;
 import com.socialportal.portal.repository.UserEntityRepository;
 import com.socialportal.portal.service.IssueService;
 import com.socialportal.portal.service.VoteService;
-import com.socialportal.portal.service.util.Pagination;
+import com.socialportal.portal.service.utils.Slicer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,22 +38,20 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public Page<IssueResponseDto> getIssues(Authentication authentication, int pageNumber, int pageSize)  {
+    public Page<IssueResponseDto> getIssues(Authentication authentication, int pageNumber, int pageSize) {
 
-        var user =  this.userEntityRepository
-                .findByUsername(authentication.getName())
-                .orElseThrow(()->new UsernameNotFoundException("User cannot be located in db. Database corrupted!!"));
-        var userLocation = user.getUserLocation();
+        List<Issue> issues = this.findIssuesByUserInterestZone(authentication.getName());
 
+        List<IssueResponseDto> content = mapIssuesToDto(issues);
 
-        List <Double> coordinates = getBoundingBox
-                (
-                userLocation.getLatitude(),
-                userLocation.getLongitude(),
-                userLocation.getRadiusOfInterest()*1000.0 // from km to meters
-                );
+        List<IssueResponseDto> paginatedContent = Slicer.sliceContent(content, pageNumber, pageSize);
 
-        List <IssueLocation> issueLocations = this.issueLocationRepository.findAllByLatitudeBetweenAndLongitudeBetween
+        return new PageImpl<>(paginatedContent, PageRequest.of(pageNumber, pageSize), paginatedContent.size());
+    }
+
+    private List<Issue> findIssuesByUserInterestZone(String username) {
+        var coordinates = getUserInterestZone(username);
+        List<IssueLocation> issueLocations = this.issueLocationRepository.findAllByLatitudeBetweenAndLongitudeBetween
                 (
                         coordinates.get(0),
                         coordinates.get(1),
@@ -60,29 +59,41 @@ public class IssueServiceImpl implements IssueService {
                         coordinates.get(3)
                 );
 
+        return issueLocations.stream().map(IssueLocation::getIssue).toList();
+    }
 
-        var content = issueLocations
+    private List<Double> getUserInterestZone(String username) {
+        var user = this.userEntityRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User cannot be located in db. Database corrupted!!"));
+        var userLocation = user.getUserLocation();
+
+        return getBoundingBox
+                (
+                        userLocation.getLatitude(),
+                        userLocation.getLongitude(),
+                        userLocation.getRadiusOfInterest() * 1000.0 // from km to meters
+                );
+    }
+
+    private List<IssueResponseDto> mapIssuesToDto(List<Issue> issueLocations) {
+        return issueLocations
                 .stream()
-                .map(issueLocation ->
+                .map(issue ->
                         {
-                            var issueByLocation = issueLocation.getIssue();
-                            var voteDto = this.voteService.getVotesByIssueId(issueByLocation.getId());
-                                return new IssueResponseDto
-                                        (
-                                                issueByLocation.getId(),
-                                                issueByLocation.getTitle(),
-                                                issueByLocation.getDescription(),
-                                                voteDto.getUpVotes(),
-                                                voteDto.getDownVotes()
-                                        );
+                            var voteDto = this.voteService.getVotesByIssueId(issue.getId());
+                            return new IssueResponseDto
+                                    (
+                                            issue.getId(),
+                                            issue.getTitle(),
+                                            issue.getDescription(),
+                                            voteDto.getUpVotes(),
+                                            voteDto.getDownVotes()
+                                    );
                         }
                 )
                 .toList();
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
-
-        return Pagination.paginateRequest(pageRequest, content);
     }
-
 
     private List<Double> getBoundingBox(final double pLatitude, final double pLongitude, double pDistanceInMeters) {
         final List<Double> boundingBox = new ArrayList<>();
