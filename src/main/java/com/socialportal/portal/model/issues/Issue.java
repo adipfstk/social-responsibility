@@ -37,7 +37,7 @@ public class Issue {
     private IssueLocation issueLocation;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "issue")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "issue")
     private List<Comments> commentsList = new ArrayList<>();
 
 }

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/main/")
 @RequiredArgsConstructor
-public class MainController {
+public class IssueController {
     private final IssueService issueService;
     private final CommentService commentService;
     private final VoteService voteService;

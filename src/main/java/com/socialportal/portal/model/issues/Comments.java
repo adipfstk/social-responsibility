@@ -16,7 +16,6 @@ public class Comments {
     @JsonIgnore
     @ManyToOne
     private UserEntity userEntity;
-
     @ManyToOne
     private Issue issue;
 }

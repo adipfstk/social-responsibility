@@ -1,26 +1,16 @@
 package com.socialportal.portal.model.geo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.socialportal.portal.model.issues.Issue;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
 @Entity
 @Table(name = "issue_location")
-@Data
-public class IssueLocation {
-    @JsonIgnore
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotNull
-    protected Double latitude;
-
-    @NotNull
-    protected Double longitude;
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class IssueLocation extends Location {
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "issueLocation")
     @JoinColumn (name = "issue_id")
     private Issue issue;

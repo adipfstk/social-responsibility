@@ -8,23 +8,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
 @Entity
 @Table(name = "user_location")
-@Data
-public class UserLocation {
-    @JsonIgnore
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotNull
-    private Double latitude;
-
-    @NotNull
-    private Double longitude;
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class UserLocation extends Location {
     @NotNull
     private Double radiusOfInterest;
 
