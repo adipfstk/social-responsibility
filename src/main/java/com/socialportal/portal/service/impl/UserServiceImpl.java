@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
         var userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new NoRolesDataBase("No role present in db"));
 
-        userToCommit.setRoles(Set.of(userRole));
+        userToCommit.setRole(userRole);
 
         if (profilePic!=null) {
             var image = userImageBuilder(profilePic);

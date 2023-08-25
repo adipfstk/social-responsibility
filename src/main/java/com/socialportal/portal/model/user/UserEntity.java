@@ -68,8 +68,8 @@ public class UserEntity {
     private boolean accepted;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Roles> roles = new HashSet<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Roles role;
 
     @JsonIgnore
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)

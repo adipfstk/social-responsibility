@@ -114,7 +114,6 @@ public class IssueServiceImpl implements IssueService {
                                             voteDto.getUpVotes(),
                                             voteDto.getDownVotes(),
                                             issues
-                                            //           issueImages
                                     );
                         }
                 )

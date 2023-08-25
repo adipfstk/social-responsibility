@@ -27,15 +27,12 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(()->new UsernameNotFoundException("Cannot find the user in db"));
         return User.withUsername(userEntity.getUsername())
                 .password(userEntity.getPassword())
-                .authorities(mapRolesToGrantedAuthorities(userEntity.getRoles()))
+                .authorities(mapRolesToGrantedAuthorities(userEntity.getRole()))
                 .build();
-
     }
 
-    public List<SimpleGrantedAuthority> mapRolesToGrantedAuthorities(Set<Roles> roles) {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .toList();
+    public List<SimpleGrantedAuthority> mapRolesToGrantedAuthorities(Roles role) {
+        return List.of(new SimpleGrantedAuthority(role.getName()));
     }
 
 }
