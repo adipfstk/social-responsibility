@@ -19,7 +19,7 @@ public class ImageData {
     protected String type;
 
     @Lob
-    @Column(name = "imagedata", length = 500000000)
+    @Column(name = "imagedata", length = 2000000000)
     protected byte[] imageData;
 
 

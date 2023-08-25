@@ -3,11 +3,14 @@ package com.socialportal.portal.service.impl;
 
 import com.socialportal.portal.dto.IssueResponseDto;
 import com.socialportal.portal.model.geo.IssueLocation;
+import com.socialportal.portal.model.issues.IssueImage;
+import com.socialportal.portal.model.user.UserEntity;
 import com.socialportal.portal.pojo.request.IssueRequest;
 import com.socialportal.portal.model.issues.Issue;
 import com.socialportal.portal.repository.IssueLocationRepository;
 import com.socialportal.portal.repository.IssueRepository;
 import com.socialportal.portal.repository.UserEntityRepository;
+import com.socialportal.portal.service.ImageService;
 import com.socialportal.portal.service.IssueService;
 import com.socialportal.portal.service.VoteService;
 import com.socialportal.portal.service.utils.Slicer;
@@ -18,23 +21,45 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class IssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
     private final IssueLocationRepository issueLocationRepository;
     private final UserEntityRepository userEntityRepository;
     private final VoteService voteService;
+    private final ImageService imageService;
 
-    public Issue save(IssueRequest issueRequest) {
+    public Issue save(IssueRequest issueRequest, List<MultipartFile> imgList, Authentication authentication) {
         Issue issue = issueRequest.getIssue();
+        if (imgList != null) {
+            issue.setImages(imgList
+                    .stream()
+                    .map(this::issueImageBuilder)
+                    .toList()
+            );
+        }
+        issue.setAuthor(findUserByUsername(authentication.getName()));
         issue.setIssueLocation(issueRequest.getIssueLocation());
 
         return this.issueRepository.save(issue);
+    }
+
+    private IssueImage issueImageBuilder(MultipartFile file) {
+        try {
+            var issueImage = new IssueImage();
+            this.imageService.imageMapper(this.imageService.buildImage(file), issueImage);
+            return issueImage;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -63,11 +88,8 @@ public class IssueServiceImpl implements IssueService {
     }
 
     private List<Double> getUserInterestZone(String username) {
-        var user = this.userEntityRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User cannot be located in db. Database corrupted!!"));
+        var user = findUserByUsername(username);
         var userLocation = user.getUserLocation();
-
         return getBoundingBox
                 (
                         userLocation.getLatitude(),
@@ -81,14 +103,18 @@ public class IssueServiceImpl implements IssueService {
                 .stream()
                 .map(issue ->
                         {
-                            var voteDto = this.voteService.getVotesByIssueId(issue.getId());
+                            var issueId = issue.getId();
+                            var voteDto = this.voteService.getVotesByIssueId(issueId);
+                            var issues = issue.getImages().stream().map(this.imageService::getPayload).toList();
                             return new IssueResponseDto
                                     (
                                             issue.getId(),
                                             issue.getTitle(),
                                             issue.getDescription(),
                                             voteDto.getUpVotes(),
-                                            voteDto.getDownVotes()
+                                            voteDto.getDownVotes(),
+                                            issues
+                                            //           issueImages
                                     );
                         }
                 )
@@ -118,4 +144,9 @@ public class IssueServiceImpl implements IssueService {
         return boundingBox;
     }
 
+    private UserEntity findUserByUsername(String username) {
+        return this.userEntityRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User cannot be located in db. Database corrupted!!"));
+    }
 }

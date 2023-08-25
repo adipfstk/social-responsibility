@@ -12,7 +12,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class IssueImage extends ImageData {
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
-    private Issue issue;
+
 }

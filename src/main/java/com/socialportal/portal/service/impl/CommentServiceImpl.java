@@ -26,11 +26,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Page<CommentDto> getComments(Long issueId, int pageNo, int itemsPerPage) {
 
-        var targetIssue = this.issueRepository
-                .findById(issueId)
-                .orElseThrow(() -> new NoIssueFoundException("Given issue never existed or does not exist anymore"));
-
-        var commentsList = targetIssue.getCommentsList();
+        var commentsList = this.commentRepository.findAllCommentsForIssue(issueId);
+        if (commentsList.isEmpty()) {
+            throw new NoIssueFoundException("No comments");
+        }
 
         var content = commentsList.stream().map(comment -> {
             var commentContent = comment.getContent();

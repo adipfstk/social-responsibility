@@ -2,21 +2,20 @@ package com.socialportal.portal.service.impl;
 
 import com.socialportal.portal.dto.LoginResponse;
 import com.socialportal.portal.dto.RegisteredUserDto;
-import com.socialportal.portal.exception.image.ImageUploadFailure;
+import com.socialportal.portal.dto.UserImageDto;
 import com.socialportal.portal.exception.user.NoRolesDataBase;
 import com.socialportal.portal.exception.user.UserAlreadyExists;
 import com.socialportal.portal.model.user.UserEntity;
+import com.socialportal.portal.model.user.UserImage;
 import com.socialportal.portal.pojo.request.LoginRequest;
 import com.socialportal.portal.pojo.request.SignUpRequest;
 import com.socialportal.portal.repository.RoleRepository;
 import com.socialportal.portal.repository.UserEntityRepository;
 import com.socialportal.portal.security.JwtService;
-import com.socialportal.portal.service.UserService;
 import com.socialportal.portal.service.ImageService;
+import com.socialportal.portal.service.UserService;
 import jakarta.transaction.Transactional;
-import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,28 +31,14 @@ import java.io.IOException;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
     private final UserEntityRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final ImageService imageService;
-
-    public UserServiceImpl(UserEntityRepository userRepository,
-                           RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder,
-                           AuthenticationManager authenticationManager,
-                           JwtService jwtService,
-                           @Qualifier(value = "userImageServiceImpl") ImageService imageService) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
-        this.imageService = imageService;
-    }
 
     @Override
     @Transactional
@@ -64,13 +49,9 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExists("The username/email is already taken");
         }
 
-        UserEntity userToCommit = prepareUserForSignUp(signUpRequest);
+        UserEntity userToCommit = prepareUserForSignUp(signUpRequest, profilePic);
 
         userRepository.save(userToCommit);
-
-        if (profilePic != null) {
-            uploadProfilePicture(profilePic, userToCommit.getId());
-        }
 
         return new RegisteredUserDto(userToCommit.getUsername(), "User registered successfully");
     }
@@ -91,21 +72,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public Integer updateProfilePicture(@NonNull MultipartFile image, Authentication authentication) {
-        UserEntity user = getUserFromAuthentication(authentication);
-        uploadProfilePicture(image, user.getId());
-
-        return HttpStatus.CREATED.value();
+    public UserImageDto getProfilePic(long id) {
+        var user = this.userRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("No user found in db"));
+        var userImageDto = new UserImageDto();
+        var userImage = user.getUserImage();
+        userImageDto.setUserImage(this.imageService.getPayload(userImage));
+        return userImageDto;
     }
 
-    @Override
-    public byte[] getProfilePic(Authentication authentication) {
-        UserEntity user = getUserFromAuthentication(authentication);
-        return imageService.getImages(user.getId()).get(0);
-    }
-
-    private UserEntity prepareUserForSignUp(SignUpRequest signUpRequest) {
+    private UserEntity prepareUserForSignUp(SignUpRequest signUpRequest, MultipartFile profilePic) {
         UserEntity userToCommit = signUpRequest.getUserEntity();
         userToCommit.setUserLocation(signUpRequest.getGeoLocation());
 
@@ -113,6 +88,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NoRolesDataBase("No role present in db"));
 
         userToCommit.setRoles(Set.of(userRole));
+
+        if (profilePic!=null) {
+            var image = userImageBuilder(profilePic);
+            image.setUserEntity(userToCommit);
+            userToCommit.setUserImage(image);
+        }
 
         String bcryptPassword = passwordEncoder.encode(userToCommit.getPassword());
         userToCommit.setPassword(bcryptPassword);
@@ -125,13 +106,16 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("Cannot locate user in db"));
     }
 
-    private void uploadProfilePicture(MultipartFile image, Long userId) {
-        if (!image.isEmpty()) {
-            try {
-                this.imageService.uploadImage(image, userId);
-            } catch (IOException e) {
-                throw new ImageUploadFailure("Image cannot be uploaded");
-            }
+    private UserImage userImageBuilder(MultipartFile file) {
+        try {
+            var userImage = new UserImage();
+            this.imageService.imageMapper(this.imageService.buildImage(file), userImage);
+            return userImage;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
+
+
 }

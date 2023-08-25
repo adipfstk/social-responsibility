@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/main/")
@@ -22,9 +25,12 @@ public class IssueController {
     private final IssueService issueService;
     private final CommentService commentService;
     private final VoteService voteService;
+
     @PostMapping("add-issue")
-    ResponseEntity<Issue> addIssue(@RequestBody IssueRequest issue) {
-        return new ResponseEntity<>(this.issueService.save(issue), HttpStatus.CREATED);
+    ResponseEntity<Issue> addIssue(@RequestPart IssueRequest issue,
+                                   @RequestPart(required = false) List<MultipartFile> images,
+                                   Authentication authentication) {
+        return new ResponseEntity<>(this.issueService.save(issue, images, authentication), HttpStatus.CREATED);
     }
 
     @GetMapping("issues")
@@ -33,20 +39,18 @@ public class IssueController {
                     Authentication authentication,
                     @RequestParam Integer pageNo,
                     @RequestParam Integer noOfItems
-            )
-    {
+            ) {
         return ResponseEntity.ok(this.issueService.getIssues(authentication, pageNo, noOfItems));
     }
 
     @GetMapping("issue/{issueId}/get-comments")
     ResponseEntity<Page<CommentDto>> getCommentsByIssueId
             (
-            @PathVariable(name ="issueId") Long issueId,
-            @RequestParam(name = "pageNo") int pageNo,
-            @RequestParam(name = "itemsPerPage") int itemsPerPage
-            )
-    {
-         return ResponseEntity.ok(this.commentService.getComments(issueId, pageNo, itemsPerPage));
+                    @PathVariable(name = "issueId") Long issueId,
+                    @RequestParam(name = "pageNo") int pageNo,
+                    @RequestParam(name = "itemsPerPage") int itemsPerPage
+            ) {
+        return ResponseEntity.ok(this.commentService.getComments(issueId, pageNo, itemsPerPage));
     }
 
     @PostMapping("issue/{issueId}/add-comment")
@@ -55,8 +59,7 @@ public class IssueController {
                     Authentication authentication,
                     @RequestBody Comments comment,
                     @PathVariable long issueId
-            )
-    {
+            ) {
         return new ResponseEntity<>(this.commentService.addComment(authentication, comment, issueId), HttpStatus.CREATED);
     }
 

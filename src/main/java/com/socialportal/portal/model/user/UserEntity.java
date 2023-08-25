@@ -13,6 +13,7 @@ import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -69,5 +70,9 @@ public class UserEntity {
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Roles> roles = new HashSet<>();
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    private UserImage userImage;
 
 }

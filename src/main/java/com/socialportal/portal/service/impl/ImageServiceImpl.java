@@ -1,14 +1,17 @@
 package com.socialportal.portal.service.impl;
 
 import com.socialportal.portal.model.image.ImageData;
+import com.socialportal.portal.service.ImageService;
 import com.socialportal.portal.service.utils.ImageUtil;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-public class CommonImageService {
+@Service
+public class ImageServiceImpl implements ImageService {
 
-    public <T extends ImageData> byte[] getImage(T dbImage) {
+    public <T extends ImageData> byte[] getPayload(T dbImage) {
         return ImageUtil.decompressImage(dbImage.getImageData());
     }
 

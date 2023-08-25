@@ -2,6 +2,7 @@ package com.socialportal.portal.model.issues;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.socialportal.portal.model.geo.IssueLocation;
+import com.socialportal.portal.model.user.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class Issue {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(max= 70)
+    @Size(max = 70)
     private String title;
 
     @Size(min = 0, max = 10000)
@@ -33,11 +34,16 @@ public class Issue {
     private boolean archived = false;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private IssueLocation issueLocation;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "issue")
-    private List<Comments> commentsList = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    private UserEntity author;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "owner_id")
+    private List<IssueImage> images = new ArrayList<>();
 
 }

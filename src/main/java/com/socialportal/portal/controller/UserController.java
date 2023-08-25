@@ -7,9 +7,7 @@ import com.socialportal.portal.pojo.request.SignUpRequest;
 import com.socialportal.portal.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
 
     @PostMapping
@@ -34,13 +31,11 @@ public class UserController {
         return ResponseEntity.ok(this.userService.login(loginRequest));
     }
 
-    @PutMapping(value = "/profilePic")
-    public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file, Authentication authentication) {
-        return ResponseEntity.status(this.userService.updateProfilePicture(file, authentication)).build();
-    }
+    @GetMapping("/profile-pic")
+    public ResponseEntity<?> getProfilePicById(@RequestParam long id) {
 
-    @GetMapping("/profilePic")
-    public ResponseEntity<?> getImageInfoByName(Authentication authentication) {
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(this.userService.getProfilePic(authentication));
+        return ResponseEntity.ok()
+                .body(
+                this.userService.getProfilePic(id));
     }
 }

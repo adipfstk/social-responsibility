@@ -3,6 +3,7 @@ package com.socialportal.portal.pojo.request;
 import com.socialportal.portal.model.geo.IssueLocation;
 import com.socialportal.portal.model.issues.Issue;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class IssueRequest {
