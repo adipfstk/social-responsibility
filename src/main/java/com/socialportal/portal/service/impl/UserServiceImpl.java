@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -76,7 +77,11 @@ public class UserServiceImpl implements UserService {
         var user = this.userRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("No user found in db"));
         var userImageDto = new UserImageDto();
         var userImage = user.getUserImage();
-        userImageDto.setUserImage(this.imageService.getPayload(userImage));
+        if (userImage != null) {
+            var imagePayload = this.imageService.getPayload(userImage);
+            userImageDto.setUserImage(imagePayload);
+        }
+
         return userImageDto;
     }
 

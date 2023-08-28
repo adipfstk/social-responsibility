@@ -17,7 +17,6 @@ public class AdministrationServiceImpl implements AdministrationService {
     @Override
     public Page<Issue> getAllIssuesByStatus(boolean status, int pageNo, int pageSize) {
         Pageable pageRequest = PageRequest.of(pageNo, pageSize);
-        System.out.println(this.issueRepository.findAllByArchived(status, pageRequest).getContent().size());
         return this.issueRepository.findAllByArchived(status, pageRequest);
     }
 

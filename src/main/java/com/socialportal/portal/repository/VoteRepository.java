@@ -13,4 +13,9 @@ public interface VoteRepository extends JpaRepository<IssueVotes, Long> {
     Optional<Long> countVotes(Long voteDirection, Long issueId);
     Optional<IssueVotes> findByUserId(Long issueId);
 
+    @Query(value = "SELECT vote_value "
+            + "FROM issues_votes iv "
+            + "WHERE iv.user_id = ?1 AND iv.issue_id = ?2", nativeQuery = true)
+    Optional<Long> getTotalVotesForUserAndIssue(long userId, long issueId);
+
 }

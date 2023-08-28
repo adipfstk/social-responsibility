@@ -26,10 +26,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class IssueServiceImpl implements IssueService {
+public class ActiveIssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
     private final IssueLocationRepository issueLocationRepository;
     private final UserEntityRepository userEntityRepository;
@@ -65,9 +66,11 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public Page<IssueResponseDto> getIssues(Authentication authentication, int pageNumber, int pageSize) {
 
-        List<Issue> issues = this.findIssuesByUserInterestZone(authentication.getName());
+        var userName = authentication.getName();
 
-        List<IssueResponseDto> content = mapIssuesToDto(issues);
+        List<Issue> issues = this.findIssuesByUserInterestZone(userName);
+
+        List<IssueResponseDto> content = mapIssuesToDto(issues, userName);
 
         List<IssueResponseDto> paginatedContent = Slicer.sliceContent(content, pageNumber, pageSize);
 
@@ -98,22 +101,26 @@ public class IssueServiceImpl implements IssueService {
                 );
     }
 
-    private List<IssueResponseDto> mapIssuesToDto(List<Issue> issueLocations) {
+    private List<IssueResponseDto> mapIssuesToDto(List<Issue> issueLocations, String username) {
+        var userId = findUserByUsername(username).getId();
         return issueLocations
                 .stream()
                 .map(issue ->
                         {
                             var issueId = issue.getId();
-                            var voteDto = this.voteService.getVotesByIssueId(issueId);
-                            var issues = issue.getImages().stream().map(this.imageService::getPayload).toList();
+                            var issueTitle = issue.getTitle();
+                            var issueDescription = issue.getDescription();
+                            var issueVoteStats = this.voteService.getVotesByIssueId(issueId);
+                            var currentUserVote = this.voteService.getTotalVotesForUserAndIssue(issueId, userId);
+                            var issueImages = issue.getImages().stream().map(this.imageService::getPayload).toList();
                             return new IssueResponseDto
                                     (
-                                            issue.getId(),
-                                            issue.getTitle(),
-                                            issue.getDescription(),
-                                            voteDto.getUpVotes(),
-                                            voteDto.getDownVotes(),
-                                            issues
+                                            issueId,
+                                            issueTitle,
+                                            issueDescription,
+                                            issueImages,
+                                            issueVoteStats,
+                                            currentUserVote
                                     );
                         }
                 )
