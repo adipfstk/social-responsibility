@@ -5,7 +5,7 @@ import com.socialportal.portal.model.geo.IssueLocation;
 import com.socialportal.portal.model.user.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.Date;

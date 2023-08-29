@@ -6,4 +6,5 @@ import org.springframework.data.domain.Page;
 public interface AdministrationService {
     Page<Issue> getAllIssuesByStatus(boolean status, int pageNo, int pageSize);
     void deactivateIssuesById(long issueId);
+    void createAdmin(long userId);
 }

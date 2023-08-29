@@ -7,6 +7,7 @@ import com.socialportal.portal.exception.user.UserAlreadyExists;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -36,5 +37,10 @@ public class ExceptionController {
     @ExceptionHandler(NoCommentFoundException.class)
     ResponseEntity<String> noCommentFoundHandler(NoCommentFoundException noCommentFoundException) {
         return new ResponseEntity<>(noCommentFoundException.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    ResponseEntity<String> noUserFoundHandler(UsernameNotFoundException usernameNotFoundException) {
+        return new ResponseEntity<>(usernameNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

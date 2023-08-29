@@ -28,4 +28,10 @@ public class AdminController {
         this.administrationService.deactivateIssuesById(issueId);
         return new ResponseEntity<>("Issue status set to archived", HttpStatus.OK);
     }
+
+    @PutMapping("/{userId}")
+    ResponseEntity<String> addAdmin(@PathVariable long userId) {
+        this.administrationService.createAdmin(userId);
+        return ResponseEntity.ok("User with id: " + userId + " is now an admin");
+    }
 }

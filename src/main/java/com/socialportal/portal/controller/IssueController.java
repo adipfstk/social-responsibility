@@ -19,21 +19,21 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/main/")
+@RequestMapping("/api/v1/main")
 @RequiredArgsConstructor
 public class IssueController {
     private final IssueService issueService;
     private final CommentService commentService;
     private final VoteService voteService;
 
-    @PostMapping("issues")
+    @PostMapping("/issues")
     ResponseEntity<Issue> addIssue(@RequestPart IssueRequest issue,
                                    @RequestPart(required = false) List<MultipartFile> images,
                                    Authentication authentication) {
         return new ResponseEntity<>(this.issueService.save(issue, images, authentication), HttpStatus.CREATED);
     }
 
-    @GetMapping("issues")
+    @GetMapping("/issues")
     ResponseEntity<Page<IssueResponseDto>> listIssues
             (
                     Authentication authentication,
@@ -43,7 +43,7 @@ public class IssueController {
         return ResponseEntity.ok(this.issueService.getIssues(authentication, pageNo, noOfItems));
     }
 
-    @GetMapping("issues/{issueId}/comments")
+    @GetMapping("/issues/{issueId}/comments")
     ResponseEntity<Page<CommentDto>> getCommentsByIssueId
             (
                     @PathVariable(name = "issueId") Long issueId,
@@ -53,7 +53,7 @@ public class IssueController {
         return ResponseEntity.ok(this.commentService.getComments(issueId, pageNo, itemsPerPage));
     }
 
-    @PostMapping("issues/{issueId}/comments")
+    @PostMapping("/issues/{issueId}/comments")
     ResponseEntity<CommentDto> addComment
             (
                     Authentication authentication,
@@ -63,11 +63,11 @@ public class IssueController {
         return new ResponseEntity<>(this.commentService.addComment(authentication, comment, issueId), HttpStatus.CREATED);
     }
 
-    @PostMapping("issues/{issueId}/vote")
+    @PostMapping("/issues/{issueId}/vote")
     ResponseEntity<Integer> vote(@PathVariable Long issueId, Authentication authentication, @RequestParam Integer voteValue) {
         return ResponseEntity.ok(this.voteService.vote(authentication, voteValue, issueId));
     }
-    @DeleteMapping("comments/{commentId}")
+    @DeleteMapping("/comments/{commentId}")
     ResponseEntity<String> deleteComment(Authentication authentication, @PathVariable(name = "commentId") Long commentId) {
         this.commentService.deleteComment(authentication, commentId);
         return new ResponseEntity<>("Comment deleted successfully", HttpStatus.OK);
