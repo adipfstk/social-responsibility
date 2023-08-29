@@ -50,7 +50,7 @@
 <ol>
   <b>
     <li>/api/v1/user</li>
-    <b>
+  </b>
       <details>
         <table>
           <tr>
