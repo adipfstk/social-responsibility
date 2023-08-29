@@ -3,7 +3,6 @@ package com.socialportal.portal.service.impl;
 import com.socialportal.portal.dto.CommentDto;
 import com.socialportal.portal.exception.issue.NoCommentFoundException;
 import com.socialportal.portal.exception.issue.NoIssueFoundException;
-import com.socialportal.portal.exception.user.NoRolesDataBase;
 import com.socialportal.portal.model.issues.Comment;
 import com.socialportal.portal.model.user.UserEntity;
 import com.socialportal.portal.repository.CommentRepository;
@@ -17,11 +16,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import javax.management.relation.RoleNotFoundException;
 
 @Service
 @RequiredArgsConstructor

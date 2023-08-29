@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.socialportal.portal.model.geo.IssueLocation;
 import com.socialportal.portal.model.user.UserEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.AssertFalse;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,13 +21,12 @@ public class Issue {
     private Long id;
 
     @JsonIgnore
-    @AssertFalse
-    private boolean archived;
+    private boolean archived = false;
 
     @Size(max = 70)
     private String title;
 
-    @Size(min = 0, max = 10000)
+    @Size(max = 10000)
     private String description;
 
     @JsonIgnore

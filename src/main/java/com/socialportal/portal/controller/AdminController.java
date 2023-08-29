@@ -17,14 +17,14 @@ public class AdminController {
     @GetMapping("/issues/{pageNo}")
     ResponseEntity<Page<Issue>> getIssues
             (
-                    @RequestParam(required = false, defaultValue = "false") boolean issueStatus,
+                    @RequestParam(required = false, defaultValue = "false") boolean status,
                     @PathVariable int pageNo,
                     @RequestParam(required = false, defaultValue = "5") int pageSize
             ) {
-        return ResponseEntity.ok(this.administrationService.getAllIssuesByStatus(issueStatus, pageNo, pageSize));
+        return ResponseEntity.ok(this.administrationService.getAllIssuesByStatus(status, pageNo, pageSize));
     }
     @PutMapping("/issues/{issueId}/archive")
-    ResponseEntity<String> archiveIssue(long issueId) {
+    ResponseEntity<String> archiveIssue(@PathVariable long issueId) {
         this.administrationService.deactivateIssuesById(issueId);
         return new ResponseEntity<>("Issue status set to archived", HttpStatus.OK);
     }
