@@ -33,7 +33,6 @@ public class UserController {
 
     @GetMapping("/profile-pic")
     public ResponseEntity<?> getProfilePicById(@RequestParam long id) {
-
         return ResponseEntity.ok()
                 .body(
                 this.userService.getProfilePic(id));

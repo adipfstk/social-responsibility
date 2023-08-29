@@ -18,7 +18,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,11 +27,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserEntityRepository userRepository;
     private final RoleRepository roleRepository;
@@ -42,7 +40,6 @@ public class UserServiceImpl implements UserService {
     private final ImageService imageService;
 
     @Override
-    @Transactional
     public RegisteredUserDto signUp(SignUpRequest signUpRequest, MultipartFile profilePic) {
         String username = signUpRequest.getUserEntity().getUsername();
 
@@ -104,11 +101,6 @@ public class UserServiceImpl implements UserService {
         userToCommit.setPassword(bcryptPassword);
 
         return userToCommit;
-    }
-
-    private UserEntity getUserFromAuthentication(Authentication authentication) {
-        return userRepository.findByUsername(authentication.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("Cannot locate user in db"));
     }
 
     private UserImage userImageBuilder(MultipartFile file) {

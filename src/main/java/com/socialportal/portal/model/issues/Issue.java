@@ -14,6 +14,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "issues")
 public class Issue {
     @JsonIgnore
     @Id

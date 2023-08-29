@@ -2,7 +2,7 @@ package com.socialportal.portal.controller;
 
 import com.socialportal.portal.dto.CommentDto;
 import com.socialportal.portal.dto.IssueResponseDto;
-import com.socialportal.portal.model.issues.Comments;
+import com.socialportal.portal.model.issues.Comment;
 import com.socialportal.portal.model.issues.Issue;
 import com.socialportal.portal.pojo.request.IssueRequest;
 import com.socialportal.portal.service.CommentService;
@@ -26,7 +26,7 @@ public class IssueController {
     private final CommentService commentService;
     private final VoteService voteService;
 
-    @PostMapping("add-issue")
+    @PostMapping("issues")
     ResponseEntity<Issue> addIssue(@RequestPart IssueRequest issue,
                                    @RequestPart(required = false) List<MultipartFile> images,
                                    Authentication authentication) {
@@ -43,7 +43,7 @@ public class IssueController {
         return ResponseEntity.ok(this.issueService.getIssues(authentication, pageNo, noOfItems));
     }
 
-    @GetMapping("issue/{issueId}/get-comments")
+    @GetMapping("issues/{issueId}/comments")
     ResponseEntity<Page<CommentDto>> getCommentsByIssueId
             (
                     @PathVariable(name = "issueId") Long issueId,
@@ -53,20 +53,24 @@ public class IssueController {
         return ResponseEntity.ok(this.commentService.getComments(issueId, pageNo, itemsPerPage));
     }
 
-    @PostMapping("issue/{issueId}/add-comment")
+    @PostMapping("issues/{issueId}/comments")
     ResponseEntity<CommentDto> addComment
             (
                     Authentication authentication,
-                    @RequestBody Comments comment,
+                    @RequestBody Comment comment,
                     @PathVariable long issueId
             ) {
         return new ResponseEntity<>(this.commentService.addComment(authentication, comment, issueId), HttpStatus.CREATED);
     }
 
-    @PostMapping("issue/{issueId}/vote")
+    @PostMapping("issues/{issueId}/vote")
     ResponseEntity<Integer> vote(@PathVariable Long issueId, Authentication authentication, @RequestParam Integer voteValue) {
         return ResponseEntity.ok(this.voteService.vote(authentication, voteValue, issueId));
     }
-
+    @DeleteMapping("comments/{commentId}")
+    ResponseEntity<String> deleteComment(Authentication authentication, @PathVariable(name = "commentId") Long commentId) {
+        this.commentService.deleteComment(authentication, commentId);
+        return new ResponseEntity<>("Comment deleted successfully", HttpStatus.OK);
+    }
 
 }

@@ -16,14 +16,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, CustomAuthenticationFilter customAuthenticationFilter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/main/**").hasAuthority("USER")
-                        .requestMatchers("/api/v1/admin/**").permitAll()
+                        .requestMatchers("/api/v1/main/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

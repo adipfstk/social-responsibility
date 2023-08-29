@@ -7,7 +7,7 @@ import lombok.Data;
 @Entity
 @Table(name = "issue_comments")
 @Data
-public class Comments {
+public class Comment {
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

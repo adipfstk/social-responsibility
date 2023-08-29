@@ -1,17 +1,19 @@
 package com.socialportal.portal.repository;
 
-import com.socialportal.portal.model.issues.IssueVotes;
+import com.socialportal.portal.model.issues.IssueVote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
 import java.util.Optional;
 
-public interface VoteRepository extends JpaRepository<IssueVotes, Long> {
+public interface VoteRepository extends JpaRepository<IssueVote, Long> {
 
     @Query(value = "SELECT COUNT(vote_value) "
-    + "FROM issues_votes iv "
-    + "WHERE iv.vote_value = ?1 AND iv.issue_id = ?2", nativeQuery = true)
-    Optional<Long> countVotes(Long voteDirection, Long issueId);
-    Optional<IssueVotes> findByUserId(Long issueId);
+            + "FROM issues_votes iv "
+            + "WHERE iv.vote_value = ?1 AND iv.issue_id = ?2", nativeQuery = true)
+    Optional<Long> countVotes(byte voteDirection, long issueId);
+
+    Optional<IssueVote> findByUserId(Long issueId);
 
     @Query(value = "SELECT vote_value "
             + "FROM issues_votes iv "

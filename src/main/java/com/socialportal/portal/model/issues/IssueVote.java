@@ -12,14 +12,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IssueVotes {
+public class IssueVote {
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    Integer voteValue;
+    private Integer voteValue;
 
     @JsonIgnore
     @OneToOne

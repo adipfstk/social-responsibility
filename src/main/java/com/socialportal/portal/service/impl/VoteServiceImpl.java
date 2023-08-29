@@ -3,7 +3,7 @@ package com.socialportal.portal.service.impl;
 import com.socialportal.portal.dto.IssueVotesDto;
 import com.socialportal.portal.exception.issue.NoIssueFoundException;
 import com.socialportal.portal.model.issues.Issue;
-import com.socialportal.portal.model.issues.IssueVotes;
+import com.socialportal.portal.model.issues.IssueVote;
 import com.socialportal.portal.model.user.UserEntity;
 import com.socialportal.portal.repository.IssueRepository;
 import com.socialportal.portal.repository.UserEntityRepository;
@@ -25,9 +25,9 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public IssueVotesDto getVotesByIssueId(Long issueId) {
-        long UPVOTE = 1;
+        final byte UPVOTE = 1;
         long upVotes = voteRepository.countVotes(UPVOTE, issueId).orElse(0L);
-        long DOWNVOTE = -1;
+        final byte DOWNVOTE = -1;
         long downVotes = voteRepository.countVotes(DOWNVOTE, issueId).orElse(0L);
         return new IssueVotesDto(upVotes, downVotes);
     }
@@ -39,12 +39,9 @@ public class VoteServiceImpl implements VoteService {
         UserEntity user = userEntityRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found in database!"));
         Optional<Issue> optionalIssue = issueRepository.findById(issueId);
-        if (optionalIssue.isEmpty()) {
-            return 0;
-        }
-        Issue issue = optionalIssue.get();
+        Issue issue = optionalIssue.orElseThrow(()-> new NoIssueFoundException("Issue not found in db!"));
         Long userId = user.getId();
-        Optional<IssueVotes> optionalVote = voteRepository.findByUserId(userId);
+        Optional<IssueVote> optionalVote = voteRepository.findByUserId(userId);
         if (optionalVote.isPresent()) {
             updateVoteIfDifferent(optionalVote.get(), voteValue);
         } else {
@@ -58,7 +55,7 @@ public class VoteServiceImpl implements VoteService {
         return userId == 0L ? 0L : this.voteRepository.getTotalVotesForUserAndIssue(userId, issueId).orElse(0L);
     }
 
-    private void updateVoteIfDifferent(IssueVotes issueVote, Integer voteValue) {
+    private void updateVoteIfDifferent(IssueVote issueVote, Integer voteValue) {
         if (!issueVote.getVoteValue().equals(voteValue)) {
             issueVote.setVoteValue(voteValue);
             voteRepository.save(issueVote);
@@ -66,7 +63,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     private void saveNewIssueVote(UserEntity user, Issue issue, Integer voteValue) {
-        IssueVotes newIssueVote = new IssueVotes(0L, voteValue, user, issue);
+        IssueVote newIssueVote = new IssueVote(0L, voteValue, user, issue);
         voteRepository.save(newIssueVote);
     }
 
@@ -78,7 +75,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     private boolean shouldDeactivateIssue(IssueVotesDto votes) {
-        return votes.getDownVotes() > 0 && votes.getUpVotes() > 0 && votes.getDownVotes() >= 2 * votes.getUpVotes();
+        return votes.getUpVotes() > 5 && votes.getDownVotes() > 5 && votes.getDownVotes() >= 2 * votes.getUpVotes();
     }
 
     private void deactivateIssue(Long issueId) {

@@ -7,5 +7,4 @@ import lombok.Data;
 public class SignUpRequest {
    private UserEntity userEntity;
    private UserLocation geoLocation;
-
 }

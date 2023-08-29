@@ -3,10 +3,10 @@ package com.socialportal.portal.service.impl;
 
 import com.socialportal.portal.dto.IssueResponseDto;
 import com.socialportal.portal.model.geo.IssueLocation;
+import com.socialportal.portal.model.issues.Issue;
 import com.socialportal.portal.model.issues.IssueImage;
 import com.socialportal.portal.model.user.UserEntity;
 import com.socialportal.portal.pojo.request.IssueRequest;
-import com.socialportal.portal.model.issues.Issue;
 import com.socialportal.portal.repository.IssueLocationRepository;
 import com.socialportal.portal.repository.IssueRepository;
 import com.socialportal.portal.repository.UserEntityRepository;
@@ -26,11 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class ActiveIssueServiceImpl implements IssueService {
+public class IssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
     private final IssueLocationRepository issueLocationRepository;
     private final UserEntityRepository userEntityRepository;

@@ -4,23 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.socialportal.portal.model.geo.UserLocation;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-
+import jakarta.validation.constraints.AssertFalse;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
+@Table(name = "users")
 public class UserEntity {
     @JsonIgnore
     @Id
