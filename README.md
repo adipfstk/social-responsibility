@@ -46,83 +46,107 @@
     <li>Promote users to admin status.</li>
   </ul>
 </ol>
-<h2>🔧API Endpoints</h2>
+<h2>🔧 API Endpoints</h2>
 <ol>
-  <b><li>/api/v1/user</li><b>
-  <details>
-    <table>
-      <tr>
-        <th>Path</th>
-        <th>Method</th>
-        <th>QueryParam</th>
-        <th>Description</th>
-      </tr>
-      <tr>
-        <td>/</td>
-        <td>POST</td>
-        <td>-</td>
-        <td>User registration with optional profile image</td>
-      </tr>
-      <tr>
-        <td>/login</td>
-        <td>POST</td>
-        <td>-</td>
-        <td>User login</td>
-      </tr>
-      <tr>
-        <td>/profile-pic</td>
-        <td>GET</td>
-        <td>id</td>
-        <td>Get user's profile picture by ID</td>
-      </tr>
-    </table>
-  </details>
-  <li>/api/v1/main</li>
-  <details>
-    <table>
-    <tr>
-        <th>Path</th>
-        <th>Method</th>
-        <th>QueryParam</th>
-        <th>Description</th>
-    </tr>
-    <tr>
-        <td>/issues</td>
-        <td>POST</td>
-        <td>-</td>
-        <td>Add a new issue</td>
-    </tr>
-    <tr>
-        <td>/issues</td>
-        <td>GET</td>
-        <td>pageNo, noOfItems</td>
-        <td>List issues</td>
-    </tr>
-    <tr>
-        <td>/issues/{issueId}/comments</td>
-        <td>GET</td>
-        <td>pageNo, itemsPerPage</td>
-        <td>Get comments by issue ID</td>
-    </tr>
-    <tr>
-        <td>/issues/{issueId}/comments</td>
-        <td>POST</td>
-        <td>-</td>
-        <td>Add a comment to an issue</td>
-    </tr>
-    <tr>
-        <td>/issues/{issueId}/vote</td>
-        <td>POST</td>
-        <td>voteValue</td>
-        <td>Vote on an issue</td>
-    </tr>
-    <tr>
-        <td>/comments/{commentId}</td>
-        <td>DELETE</td>
-        <td>-</td>
-        <td>Delete a comment</td>
-    </tr>
-</table>
-
-  </details>
+  <b>
+    <li>/api/v1/user</li>
+    <b>
+      <details>
+        <table>
+          <tr>
+            <th>Path</th>
+            <th>Method</th>
+            <th>QueryParam</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>/</td>
+            <td>POST</td>
+            <td>-</td>
+            <td>User registration with optional profile image</td>
+          </tr>
+          <tr>
+            <td>/login</td>
+            <td>POST</td>
+            <td>-</td>
+            <td>User login</td>
+          </tr>
+          <tr>
+            <td>/profile-pic</td>
+            <td>GET</td>
+            <td>id</td>
+            <td>Get user's profile picture by ID</td>
+          </tr>
+        </table>
+      </details>
+      <li>/api/v1/main</li>
+      <details>
+        <table>
+          <tr>
+            <th>Path</th>
+            <th>Method</th>
+            <th>QueryParam</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>/issues</td>
+            <td>POST</td>
+            <td>-</td>
+            <td>Add a new issue</td>
+          </tr>
+          <tr>
+            <td>/issues</td>
+            <td>GET</td>
+            <td>pageNo, noOfItems</td>
+            <td>List issues</td>
+          </tr>
+          <tr>
+            <td>/issues/{issueId}/comments</td>
+            <td>GET</td>
+            <td>pageNo, itemsPerPage</td>
+            <td>Get comments by issue ID</td>
+          </tr>
+          <tr>
+            <td>/issues/{issueId}/comments</td>
+            <td>POST</td>
+            <td>-</td>
+            <td>Add a comment to an issue</td>
+          </tr>
+          <tr>
+            <td>/issues/{issueId}/vote</td>
+            <td>POST</td>
+            <td>voteValue</td>
+            <td>Vote on an issue</td>
+          </tr>
+          <tr>
+            <td>/comments/{commentId}</td>
+            <td>DELETE</td>
+            <td>-</td>
+            <td>Delete a comment</td>
+          </tr>
+        </table>
+      </details>
+      <li>/api/v1/admin</li>
+      <details>
+        <table border="1" cellpadding="5" cellspacing="0">
+          <tr>
+            <th>Path</th>
+            <th>Method</th>
+            <th>QueryParam</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>/issues/{pageNo}</td>
+            <td>GET</td>
+            <td>status, pageSize</td>
+            <td>Get issues by page number</td>
+          </tr>
+          <tr>
+            <td>/issues/{issueId}/archive</td>
+            <td>PUT</td>
+            <td>-</td>
+            <td>Archive an issue</td>
+          </tr>
+        </table>
+      </details>
 </ol>
