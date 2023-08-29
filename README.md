@@ -1,7 +1,7 @@
 <h1>Social Responsability Portal </h1>
 <h2>⚡ Quick Overview </h2>
 <p>The community-centric portal streamlines issue reporting by allowing users to register directly on the platform. After submitting essential details such as name, email, location coordinates, and preferences, users gain access to a range of features including issue tracking, voting, commenting, and reporting. This approach promotes active community participation and information exchange for efficient issue resolution. </p>
-<h2>👉 Features</h2>
+<h2>🚀 Features</h2>
 <ol>
   <b>
     <li>Registration and Login:</li>
@@ -46,7 +46,7 @@
     <li>Promote users to admin status.</li>
   </ul>
 </ol>
-<h2>🔧 API Endpoints</h2>
+<h2>✍️ API Endpoints</h2>
 <ol>
   <b>
     <li>/api/v1/user</li>
@@ -128,7 +128,7 @@
       </details>
       <li>/api/v1/admin</li>
       <details>
-        <table border="1" cellpadding="5" cellspacing="0">
+        <table>
           <tr>
             <th>Path</th>
             <th>Method</th>
@@ -150,3 +150,24 @@
         </table>
       </details>
 </ol>
+<h2>🏗️ Architecture</h2>
+
+<p><b>N Tier Architecture:</b></p>
+<i>Client <--> Controller <--> Service <--> DAO <--> DB</i>
+<details>
+<ol>
+ <li>Controller</li>
+  - Keeps all spring REST controllers
+  - Define end points
+ <li>Service</li>
+  - All service classes that hold business logic
+ <li>DAO</li>
+  - Repository layer
+  - Keep all spring JPA data repository
+  - Communicates with database  
+</ol>
+</details>
+
+
+
+
