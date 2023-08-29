@@ -77,4 +77,52 @@
       </tr>
     </table>
   </details>
+  <li>/api/v1/main</li>
+  <details>
+    <table>
+    <tr>
+        <th>Path</th>
+        <th>Method</th>
+        <th>QueryParam</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>/issues</td>
+        <td>POST</td>
+        <td>-</td>
+        <td>Add a new issue</td>
+    </tr>
+    <tr>
+        <td>/issues</td>
+        <td>GET</td>
+        <td>pageNo, noOfItems</td>
+        <td>List issues</td>
+    </tr>
+    <tr>
+        <td>/issues/{issueId}/comments</td>
+        <td>GET</td>
+        <td>pageNo, itemsPerPage</td>
+        <td>Get comments by issue ID</td>
+    </tr>
+    <tr>
+        <td>/issues/{issueId}/comments</td>
+        <td>POST</td>
+        <td>-</td>
+        <td>Add a comment to an issue</td>
+    </tr>
+    <tr>
+        <td>/issues/{issueId}/vote</td>
+        <td>POST</td>
+        <td>voteValue</td>
+        <td>Vote on an issue</td>
+    </tr>
+    <tr>
+        <td>/comments/{commentId}</td>
+        <td>DELETE</td>
+        <td>-</td>
+        <td>Delete a comment</td>
+    </tr>
+</table>
+
+  </details>
 </ol>
