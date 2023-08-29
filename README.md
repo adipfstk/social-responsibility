@@ -21,8 +21,19 @@
          <li>Upvote and downvote issues to determine their significance.</li>
          <li>Report new issues and track their status.</li>
       </ul>
+   <br>
    <b><li>Comments and Feedback:</li></b>
       <ul>
-         <li></li>
+         <li>Provide feedback and comments on issues.</li>
+         <li>Edit or delete one's own comments.</li>
+         <li>Issues with twice as many downvotes as upvotes are archived automatically.</li>
+      </ul>
+   <br>
+   <b><li>Statistics and Monitoring:</li></b>
+      <ul>
+         <li>Admin overview of active and archived issues.</li>
+         <li>Delete inappropriate comments.</li>
+         <li>Archive issues as needed.</li>
+         <li>Promote users to admin status.</li>
       </ul>
 </ol>
